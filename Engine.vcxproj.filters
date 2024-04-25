@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\engine_headers">
+      <UniqueIdentifier>{3397c453-69cd-4a5b-b76e-be1f26c91c52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\engine_resource">
+      <UniqueIdentifier>{faf4edb7-c8f6-4220-a2b8-847dc6d5b1d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine_source">
+      <UniqueIdentifier>{a3c92fab-491d-4eb4-bc40-60e28f20f9af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\engine_resource\3D Objects">
+      <UniqueIdentifier>{2bc0ede6-5198-4499-911b-e67ff7b92e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\engine_resource\Shaders">
+      <UniqueIdentifier>{7f5a3d93-fd2e-44cb-afc7-13fd8336f42f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\engine_resource\Textures">
+      <UniqueIdentifier>{810210a8-0c70-4b07-85fa-ab7e5169a051}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="engine_headers\FrameBufferObject.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\GameObject.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Light.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\LightHandler.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Material.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Mesh.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\MeshScene.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\ObjectHandler.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Raycast.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Shader.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Skybox.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Texture.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Transform.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\VAO.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\VBO.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\AABB.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Behavior.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\BloomRenderer.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\Camera.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\CollisionMesh.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\CollisionObject.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\CollisionPlane.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\CollisionSolver.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\ComputeShader.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_headers\EBO.h">
+      <Filter>Header Files\engine_headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="engine_resource\Shaders\basepostprocesser.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\blur.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\default.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\default.vert">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\defaultdeferred.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\defaultforward.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\depth.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\depth.vert">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\depthinstanced.vert">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\downsampler.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\fog.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\gbuffer.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\instanced.vert">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\jitter.comp">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\postprocess.vert">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\skybox.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\skybox.vert">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\ssao.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\ssao.vert">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\text.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\text.vert">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\tonemapper.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\upsampler.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+    <None Include="engine_resource\Shaders\lighting.frag">
+      <Filter>Resource Files\engine_resource\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="engine_source\CollisionSolver.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\ComputeShader.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\DirectionalLight.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\EBO.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\FrameBufferObject.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\GameObject.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\glad.c">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\LightHandler.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Material.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Mesh.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\MeshScene.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\ObjectHandler.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\PointLight.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Raycast.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Shader.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Skybox.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Texture.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Transform.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\VAO.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\VBO.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\AABB.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Behavior.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\BloomRenderer.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\Camera.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\CollisionMesh.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\CollisionObject.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_source\CollisionPlane.cpp">
+      <Filter>Source Files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
