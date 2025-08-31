@@ -1,8 +1,9 @@
 #include"../engine_headers/FrameBufferObject.h"
 
-FrameBufferObject::FrameBufferObject(int screenWidth, int screenHeight, int numColorTex, int numDepthTex) {
+FrameBufferObject::FrameBufferObject(int screenWidth, int screenHeight, int numColorTex, int numDepthTex, bool useMipMaps) {
 	FrameBufferObject::screenWidth = screenWidth;
 	FrameBufferObject::screenHeight = screenHeight;
+	FrameBufferObject::useMipMaps = useMipMaps;
 
 	glGenFramebuffers(1, &bufferID);
 
@@ -44,6 +45,7 @@ FrameBufferObject::FrameBufferObject(int screenWidth, int screenHeight, int numC
 FrameBufferObject::FrameBufferObject(int screenWidth, int screenHeight) {
 	FrameBufferObject::screenWidth = screenWidth;
 	FrameBufferObject::screenHeight = screenHeight;
+	useMipMaps = false;
 
 	glGenFramebuffers(1, &bufferID);
 
@@ -88,10 +90,11 @@ void FrameBufferObject::AttachColorTexture(TextureObject& texObj, GLuint index, 
 	glBindTexture(GL_TEXTURE_2D, texObj.textureID);
 	glTexImage2D(GL_TEXTURE_2D, 0, colorSpace, screenWidth, screenHeight, 0, GL_RGBA, pixelType, NULL);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, useMipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	if (useMipMaps) { glGenerateMipmap(GL_TEXTURE_2D); }
 
 	UnbindTexture();
 
@@ -171,11 +174,23 @@ void FrameBufferObject::BindFrameBuffer() {
 	glViewport(0, 0, screenWidth, screenHeight);
 }
 
+void FrameBufferObject::SetTextureAttachment(GLuint attachment) {
+	glDrawBuffer(attachment);
+}
+
 void FrameBufferObject::SetTexture(TextureObject& texObj, Shader& shader, const char* uniformName)
 {
 	shader.Activate();
 	glUniform1i(glGetUniformLocation(shader.ID, uniformName), texObj.textureUnit);
 	BindTexture(texObj);
+}
+
+void FrameBufferObject::SetTexture(Texture* tex, Shader& shader, const char* uniformName)
+{
+	shader.Activate();
+	glUniform1i(glGetUniformLocation(shader.ID, uniformName), tex->texUnit);
+	glActiveTexture(GL_TEXTURE0 + tex->texUnit);
+	glBindTexture(GL_TEXTURE_2D, tex->ID);
 }
 
 void FrameBufferObject::InitializeRenderQuad()

@@ -1,6 +1,6 @@
 #include"../engine_headers/MeshScene.h"
 
-MeshScene::MeshScene(Transform transform, std::vector<Behavior*> behavior, std::vector<const char*> lodFilenames, Shader& shader, Material* material, bool separatedGOs, bool hasColliders, bool hasBoxColliders, bool triplanar, bool useMips)
+MeshScene::MeshScene(Transform transform, std::vector<Behavior*> behavior, std::vector<const char*> lodFilenames, Shader& shader, Material* material, bool separatedGOs, bool hasColliders, bool hasBoxColliders, bool triplanar, bool flipTextures, bool useMips)
 {
 	MeshScene::transform = transform;
 	MeshScene::shader = shader;

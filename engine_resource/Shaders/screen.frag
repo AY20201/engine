@@ -2,11 +2,10 @@
 out vec4 FragColor;
 
 in vec2 texCoord;
-
-uniform sampler2D gPosition;
-uniform sampler2D gLightPosition;
-uniform sampler2D gNormal;
-uniform sampler2D gAlbedo;
+in vec3 normal;
+in vec3 currentPos;
+in vec4 currentPosLightSpace;
+in vec3 tangent;
 
 struct PointLight {
 	vec3 position;
@@ -17,15 +16,6 @@ struct PointLight {
 	float constAtten;
 	float linearAtten;
 	float expAtten;
-};
-
-struct SpotLight {
-	vec3 position;
-	vec3 direction;
-	vec3 color;
-	float innerCutoffAngle;
-	float outerCutoffAngle;
-	float intensity;
 };
 
 struct DirectionalLight {
@@ -40,27 +30,35 @@ struct DirectionalLight {
 uniform int numPointLights;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
-#define MAX_SPOT_LIGHTS 5
-uniform int numSpotLights;
-uniform SpotLight spotLights[MAX_POINT_LIGHTS];
-
 #define MAX_DIR_LIGHTS 1
 uniform int numDirLights;
 uniform DirectionalLight dirLights[MAX_DIR_LIGHTS];
 
+uniform sampler2D albedo;
+uniform float albedoScale;
+uniform vec3 albedoColor;
+uniform sampler2D normalMap;
+uniform float normalMapScale;
 uniform vec3 camPos;
+
+uniform sampler2D cameraImage;
+uniform sampler2D screenUVMap;
+
+uniform sampler2D lastCapture;
+uniform float lastCaptureTime;
+uniform float currentTime;
 
 uniform samplerCube skybox;
 
 uniform sampler2D shadowMap;
 uniform sampler2D jitterMap;
-uniform sampler2D ssao;
 
-uniform mat4 lightMatrix;
+float displayCaptureDelay = 0.0;
 
-float ambientFactor = 1.25;
-float specularStrength = 0.75;
-float specPower = 32;
+float ambientFactor = 1.0;
+float specularStrength = 0.5;
+float specPower = 8;
+float normalMapStrength = 0.5;
 
 //float initAtten = 1.0;
 //float constantAtten = 1.0;
@@ -75,15 +73,15 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewD
 	vec3 pos = light.position;
 	vec3 color = light.color;
 	float inten = light.intensity;
-
+	
 	vec3 norm = normalize(normal);
 	vec3 lightDirection = normalize(pos - fragPos);
 	float diffuse = max(dot(norm, lightDirection), 0.0);
-
+	
 	vec3 reflectionDirection = reflect(-lightDirection, norm);
 	float specAmount = pow(max(dot(viewDir, reflectionDirection), 0.0), specPower);
 	vec3 specular = specAmount * specFactor;
-
+	
 	vec3 eyeDir = normalize(fragPos - camPos);
 	vec3 environmentReflectDir = reflect(eyeDir, norm);
 	vec3 skyboxSample = vec3(texture(skybox, environmentReflectDir));
@@ -118,118 +116,29 @@ vec3 CalculateDirLight(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 v
 	return ((diffuse + specular * skyboxSample) * (1.0 - shadow)) * inten * sceneAmbience * color;
 }
 
-vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 specFactor){
-	vec3 pos = light.position;
-	vec3 dir = light.direction;
-	vec3 color = light.color;
-	float inten = light.intensity;
-	
-	vec3 directionToLight = normalize(pos - fragPos);
-	
-	vec3 norm = normalize(normal);
-	float diffuse = max(dot(norm, directionToLight), 0.0);
-		
-	vec3 reflectionDirection = reflect(-directionToLight, norm);
-	float specAmount = pow(max(dot(viewDir, reflectionDirection), 0.0), specPower);
-	vec3 specular = specAmount * specFactor;
-		
-	vec3 eyeDir = normalize(fragPos - camPos);
-	vec3 environmentReflectDir = reflect(eyeDir, norm);
-	vec3 skyboxSample = vec3(texture(skybox, environmentReflectDir));
-	float skyboxBrightness = 0.2126 * skyboxSample.r + 0.7152 * skyboxSample.g + 0.0722 * skyboxSample.b;
-
-	float theta = dot(directionToLight, normalize(-dir));
-	float epsilon = light.innerCutoffAngle - light.outerCutoffAngle;
-	float edgeSmoothing = clamp((theta - light.outerCutoffAngle) / epsilon, 0.0, 1.0);
-
-	return (diffuse + specular * skyboxSample) * inten * edgeSmoothing * color;
-}
-
 float CalculatePixelLum(vec4 sampleColor)
 {
 	vec3 adjustedLum = vec3(0.2126, 0.7152, 0.0722);
 	return (sampleColor.r * adjustedLum.r + sampleColor.g * adjustedLum.g + sampleColor.b * adjustedLum.b);
 }
 
-float CalculateShadow(vec4 fragPosLightSpace, float bias)
-{
-	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-	projCoords = projCoords * 0.5 + 0.5;
-
-	if(projCoords.z > 1.0)
-	{
-		return 0.0;
-	}
-
-	float currentDepth = projCoords.z;
-
-	float shadow = 0.0;
-	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-
-	float softness = 1.25;
-	float jitterSize = 1.5;
-
-	int sampleRadius = 2;
-
-	for(int x = -sampleRadius; x <= sampleRadius; x++)
-	{
-		for(int y = -sampleRadius; y <= sampleRadius; y++)
-		{
-			vec2 scaled = vec2(x, y) / float(sampleRadius);
-			vec2 circle = vec2(scaled.x * sqrt(1.0 - 0.5 * (scaled.y * scaled.y)), scaled.y * sqrt(1.0 - 0.5 * (scaled.x * scaled.x)));
-
-			vec2 jitterSample = texture(jitterMap, projCoords.xy + vec2(x, y) * softness * texelSize).xy;
-			float pcfDepth = texture(shadowMap, projCoords.xy + (circle + jitterSample * jitterSize) * softness * texelSize).r;
-			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
-		}
-	}
-	
-	shadow /= ((sampleRadius * 2.0 + 1.0) * (sampleRadius * 2.0 + 1.0));
-
-	return shadow;
-}
-
-vec2 CalculateFog(vec3 currentPos)
-{
-	int numSteps = 10;
-	
-	vec3 rayEnd = currentPos; //the position where this ray hits the scene
-	vec3 rayStart = camPos; //the camera's position
-	vec3 rayDir = normalize(rayEnd - rayStart);
-	float rayDistance = distance(rayEnd, rayStart);
-	float stepLength = rayDistance / numSteps;
-	
-	vec3 rayPos = rayStart + rayDir * stepLength; //offset this with noise?
-	float accum = 0.0;
-	
-	for(int i = 0; i < numSteps; i++)
-	{
-		vec4 rayPosLightSpace = lightMatrix * vec4(rayPos, 1.0);
-		accum += 1.0 - CalculateShadow(rayPosLightSpace, 0.0005);
-		rayPos += rayDir * stepLength;
-	}
-	
-	float d = accum * stepLength * 0.025;
-	float powder = 1.0 - exp(-d * 2.0);
-	float beer = exp(-d);
-	
-	return vec2(beer, powder);
-}
-
 void main()
 {
-	vec3 currentPos = texture(gPosition, texCoord).xyz;
-	vec4 currentPosLightSpace = texture(gLightPosition, texCoord);
-	vec3 normal = texture(gNormal, texCoord).rgb;
-	vec4 albedo = texture(gAlbedo, texCoord);
+	vec3 norm = normalize(normal);
 
-	float ambientOcculsion = 1.0;//texture(ssao, texCoord).r;
+	vec3 normalMapSample = (texture(normalMap, texCoord * normalMapScale).rgb * 2.0 - 1.0) * normalMapStrength;
+	vec3 tan = normalize(tangent);
+	tan = normalize(tan - dot(tan, norm) * norm);
+	vec3 bitangent = cross(tan, norm);
+	mat3 TBN = mat3(tan, bitangent, norm);
+	norm = normalize(TBN * normalMapSample);
 
-	vec3 specularSample = vec3(specularStrength, specularStrength, specularStrength);
+	vec3 specularSample = vec3(specularStrength, specularStrength, specularStrength);//texture(specMap, texCoord * specMapScale).rgb;
 
 	vec3 viewDir = normalize(camPos - currentPos);
-
+	
 	vec3 adjustedLuminace = vec3(0.2126, 0.7152, 0.0722);
+	//int numMipMaps = textureQueryLevels(skybox);
 
 	vec4 topSkySample = textureLod(skybox, vec3(0.0, 1.0, 0.0), 10.0);
 	vec4 bottomSkySample = textureLod(skybox, vec3(0.0, -1.0, 0.0), 10.0);
@@ -244,14 +153,12 @@ void main()
 						CalculatePixelLum(leftSkySample) + 
 						CalculatePixelLum(frontSkySample) +
 						CalculatePixelLum(backSkySample)) / 6.0;
-
+	
 	float sceneAmbience = avgSceneLum * ambientFactor;
-
+	
 	vec3 lightResult = vec3(0, 0, 0);
-	float shadowBias = 0.0005;
+	float shadowBias = 0.0002;
 	float shadow = 0.0;
-
-	shadow = CalculateShadow(currentPosLightSpace, shadowBias);
 
 	for(int i = 0; i < numDirLights; i++) {
 		lightResult += CalculateDirLight(dirLights[i], normal, currentPos, viewDir, specularSample, avgSceneLum, shadow);
@@ -260,11 +167,14 @@ void main()
 	for(int i = 0; i < numPointLights; i++) {
 		lightResult += CalculatePointLight(pointLights[i], normal, currentPos, viewDir, specularSample);
 	}
-
-	for(int i = 0; i < numSpotLights; i++) {
-		lightResult += CalculateSpotLight(spotLights[i], normal, currentPos, viewDir, specularSample);
+	
+	if(currentTime - displayCaptureDelay < lastCaptureTime){
+		FragColor = texture(lastCapture, texCoord * albedoScale);
+	} else {
+		vec2 screenUVCoords = texture(screenUVMap, texCoord * albedoScale).xy;
+		//screenUVCoords = vec2(screenUVCoords.x, 1.0 - screenUVCoords.y);
+		vec4 screen = texture(cameraImage, texCoord * albedoScale);
+		//FragColor = vec4(screenUVCoords.x, screenUVCoords.y, 0.0, 1.0);
+		FragColor = screen + texture(albedo, screenUVCoords) * vec4(lightResult, 1.0);
 	}
-
-	gl_FragDepth = texture(gPosition, texCoord).a;
-	FragColor = albedo * vec4(max(lightResult, sceneAmbience), 1.0) * ambientOcculsion;
 }

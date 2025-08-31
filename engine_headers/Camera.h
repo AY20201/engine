@@ -16,7 +16,7 @@ class Camera
 {
 	public:
 		glm::vec3 Position;
-		glm::vec3 Orientation = glm::vec3(0.0f, -0.25f, -1.0f);
+		glm::vec3 Orientation = glm::vec3(0.0f, -0.25f, -1.0f);//glm::vec3(0.0f, -0.25f, -1.0f);
 		glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
 
 		glm::mat4 projection = glm::mat4(1.0f);
@@ -31,9 +31,12 @@ class Camera
 		float speed = 0.05f;
 		float sensitivity = 100.0f;
 
+		bool useAutoExposure;
+		float exposure;
+
 		//empty constructor for uninitalized camera in player class
 		//Camera();
-		Camera(int width, int height, glm::vec3 position);
+		Camera(int width, int height, glm::vec3 position, bool useAutoExposure = false);
 		Camera() = default;
 
 		void UpdateMatrix(float fov, float nearClipPlane, float farClipPlane);
@@ -42,6 +45,8 @@ class Camera
 		void SetProjectionMatrix(Shader& shader, const char* uniform);
 		void FlyController(GLFWwindow* window);
 		void Look(GLFWwindow* window);
+
+		float GetSceneLuminance(int width, int height);
 };
 
 #endif

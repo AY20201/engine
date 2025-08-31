@@ -28,10 +28,11 @@ class FrameBufferObject
 {
 public:
 	FrameBufferObject() = default;
-	FrameBufferObject(int screenWidth, int screenHeight, int numColorTex, int numDepthTex);
+	FrameBufferObject(int screenWidth, int screenHeight, int numColorTex, int numDepthTex, bool useMipMaps = false);
 	FrameBufferObject(int screenWidth, int screenHeight);
 	
 	int screenWidth, screenHeight;
+	bool useMipMaps;
 
 	VAO fullscreenQuadVAO;
 	std::vector<Vertex> quadVerts;
@@ -49,8 +50,10 @@ public:
 	void UnbindTexture();
 	void BindFrameBuffer();
 	void UnbindFrameBuffer();
+	void SetTextureAttachment(GLuint attachment);
 	void SetTexture(TextureObject& texObj, Shader& shader, const char* uniformName);
-	
+	void SetTexture(Texture* tex, Shader& shader, const char* uniformName);
+
 	void InitializeRenderQuad();
 	void RenderQuad(Shader& shader);
 

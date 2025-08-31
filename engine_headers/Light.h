@@ -10,7 +10,7 @@ class Light
 {
 	public:
 
-		enum class LightType { Directional, Point };
+		enum class LightType { Directional, Point, Spot };
 		LightType type = LightType::Point;
 		int index = 0;
 

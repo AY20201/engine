@@ -83,6 +83,7 @@ void Mesh::Draw(glm::mat4 matrix, Shader& shader)
 
 		//material->SetTextures();
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(matrix));
+		glUniform1i(glGetUniformLocation(shader.ID, "triplanar"), triplanar);
 
 		glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, (void*)0);
 	}

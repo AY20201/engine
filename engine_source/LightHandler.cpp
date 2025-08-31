@@ -14,6 +14,10 @@ void LightHandler::AddLight(Light* light)
 		dirLights.push_back(light);
 	}
 	
+	if (light->type == Light::LightType::Spot)
+	{
+		spotLights.push_back(light);
+	}
 }
 
 void LightHandler::SetLightUniforms(Shader& shader)
@@ -22,6 +26,7 @@ void LightHandler::SetLightUniforms(Shader& shader)
 
 	glUniform1i(glGetUniformLocation(shader.ID, "numPointLights"), static_cast<int>(pointLights.size()));
 	glUniform1i(glGetUniformLocation(shader.ID, "numDirLights"), static_cast<int>(dirLights.size()));
+	glUniform1i(glGetUniformLocation(shader.ID, "numSpotLights"), static_cast<int>(spotLights.size()));
 
 	for (int i = 0; i < static_cast<int>(pointLights.size()); i++)
 	{
@@ -32,4 +37,13 @@ void LightHandler::SetLightUniforms(Shader& shader)
 	{
 		dirLights[i]->SetUniforms(shader);
 	}
+
+	for (int i = 0; i < static_cast<int>(spotLights.size()); i++)
+	{
+		spotLights[i]->SetUniforms(shader);
+	}
+}
+
+void LightHandler::SetSingleLightUniforms(Shader& shader, int index) {
+	pointLights[index]->SetUniforms(shader);
 }

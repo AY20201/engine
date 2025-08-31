@@ -12,9 +12,11 @@ class LightHandler
 		static LightHandler Instance;
 		std::vector <Light*> pointLights;
 		std::vector <Light*> dirLights;
+		std::vector <Light*> spotLights;
 
 		void AddLight(Light* light);
 		void SetLightUniforms(Shader& shader);
+		void SetSingleLightUniforms(Shader& shader, int index);
 
 };
 

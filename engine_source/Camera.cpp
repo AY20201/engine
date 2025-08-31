@@ -1,10 +1,13 @@
 #include "../engine_headers/Camera.h"
 
-Camera::Camera(int width, int height, glm::vec3 position)
+Camera::Camera(int width, int height, glm::vec3 position, bool useAutoExposure)
 {
 	Camera::width = width;
 	Camera::height = height;
+	Camera::useAutoExposure = useAutoExposure;
 	Position = position;
+
+	exposure = 0.08f;
 }
 
 void Camera::UpdateMatrix(float fov, float nearClipPlane, float farClipPlane)
@@ -128,4 +131,14 @@ void Camera::Look(GLFWwindow* window)
 
 		firstClick = true;
 	}
+}
+
+float Camera::GetSceneLuminance(int width, int height) {
+	glGenerateMipmap(GL_TEXTURE_2D);
+	float* avgColor = new float[4];
+	int lastMipLevel = int(log2(std::max(width, height)));
+	glGetTexImage(GL_TEXTURE_2D, lastMipLevel, GL_RGBA, GL_FLOAT, avgColor);
+	float luminance = 0.2126f * avgColor[0] + 0.7152f * avgColor[1] + 0.0722f * avgColor[2];
+	delete[] avgColor;
+	return luminance;
 }

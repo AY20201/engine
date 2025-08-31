@@ -29,7 +29,7 @@ class MeshScene
 		bool topLayer = false;
 		bool separatedGOs;
 
-		MeshScene(Transform transform, std::vector<Behavior*> behavior, std::vector<const char*> lodFilenames, Shader& shader, Material* material, bool separatedGOs = false, bool hasColliders = true, bool hasBoxColliders = true, bool triplanar = true, bool useMips = true);
+		MeshScene(Transform transform, std::vector<Behavior*> behavior, std::vector<const char*> lodFilenames, Shader& shader, Material* material, bool separatedGOs = false, bool hasColliders = true, bool hasBoxColliders = true, bool triplanar = true, bool flipTextures = false, bool useMips = true);
 		void ImportMeshes(const char* filename, unsigned int activeLod);
 		void CreateCachedMesh(Transform transform, bool hasColliders);
 		void Clear();
