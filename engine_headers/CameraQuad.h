@@ -23,6 +23,7 @@ class CameraQuad {
 		bool captureKeyPressed = false;
 		bool disabled = false;
 		bool fullscreen = false;
+		bool maxFullscreen = false;
 		bool captureDelayFrame = false;
 
 		glm::vec3 localCameraOrientation;
@@ -54,7 +55,8 @@ class CameraQuad {
 
 		void CaptureScreen(TextureObject& captureTexture, int screenWidth, int screenHeight, GLFWwindow* window, bool useFlash);
 		TextureObject& GetLastCapture();
-		TextureObject& GetActiveCapture(GLFWwindow* window);
+		void UpdateActiveCapture(GLFWwindow* window);
+		TextureObject& GetActiveCapture();
 		void ClearCapture(int index);
 		void CheckFlash(float deltaTime);
 	private:

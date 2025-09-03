@@ -190,6 +190,7 @@ int main()
 		
 		cameraQuad.ToggleDisabled(window);
 		cameraQuad.AdjustExposure(window);
+		cameraQuad.UpdateActiveCapture(window);
 
 		//camera.FlyController(window);
 		prevCamMatrix = camera.projection * camera.view;
@@ -301,7 +302,7 @@ int main()
 		//cameraQuad.RenderMainQuad(filterFrameBuffer.colorTextures[0], screenShaderProgram);
 		shadowMapFrameBuffer.SetTexture(shadowMapFrameBuffer.depthTextures[0], screenShaderProgram, "shadowMap");
 		jitterComputeShader.SetTexture(screenShaderProgram, "jitterMap");
-		basePostFrameBuffer.SetTexture(filterFrameBuffer.colorTextures[0], screenShaderProgram, "cameraImage");
+		basePostFrameBuffer.SetTexture(cameraQuad.fullscreen ? cameraQuad.GetActiveCapture() : filterFrameBuffer.colorTextures[0], screenShaderProgram, "cameraImage");
 		basePostFrameBuffer.SetTexture(cameraScreenUVMap, screenShaderProgram, "screenUVMap");
 		cameraModel.sceneGameObjects[0]->meshes[7].material->shader = screenShaderProgram;
 		cameraModel.sceneGameObjects[0]->meshes[7].material->SetTextures();
@@ -317,7 +318,7 @@ int main()
 		glDisable(GL_DEPTH_TEST);
 		captureScreenShaderProgram.Activate();
 		glUniform1f(glGetUniformLocation(captureScreenShaderProgram.ID, "time"), currentTime);
-		cameraQuad.RenderSecondQuad(cameraQuad.GetActiveCapture(window), captureScreenShaderProgram);
+		cameraQuad.RenderSecondQuad(cameraQuad.GetActiveCapture(), captureScreenShaderProgram);
 		glEnable(GL_DEPTH_TEST);
 		
 		//perspective 2
@@ -448,12 +449,13 @@ int main()
 		//render regular scene to actually be shown on screen
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		basePostShaderProgram.Activate();
-		basePostFrameBuffer.SetTexture(cameraQuad.fullscreen ? cameraQuad.GetLastCapture() : toneMapFrameBuffer.colorTextures[0], basePostShaderProgram, "renderedScene");
+		//basePostFrameBuffer.SetTexture(cameraQuad.fullscreen ? cameraQuad.GetLastCapture() : toneMapFrameBuffer.colorTextures[0], basePostShaderProgram, "renderedScene");
+		basePostFrameBuffer.SetTexture(toneMapFrameBuffer.colorTextures[0], basePostShaderProgram, "renderedScene");
 		//basePostFrameBuffer.SetTexture(cameraQuad.GetLastCapture(), basePostShaderProgram, "renderedScene");
 		basePostFrameBuffer.SetTexture(toneMapFrameBuffer.depthTextures[0], basePostShaderProgram, "renderedSceneDepth");
 		basePostFrameBuffer.RenderQuad(basePostShaderProgram);
-		if (cameraQuad.fullscreen) {
-			basePostFrameBuffer.SetTexture(cameraQuad.GetActiveCapture(window), captureScreenShaderProgram, "renderedScene");
+		if (cameraQuad.maxFullscreen) {
+			basePostFrameBuffer.SetTexture(cameraQuad.GetActiveCapture(), captureScreenShaderProgram, "renderedScene");
 			basePostFrameBuffer.RenderQuad(captureScreenShaderProgram);
 		}
 

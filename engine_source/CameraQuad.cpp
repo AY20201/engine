@@ -134,7 +134,14 @@ void CameraQuad::ToggleDisabled(GLFWwindow* window) {
 
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !fullscreenKeyPressed) {
 		fullscreen = !fullscreen;
+		if (maxFullscreen) { 
+			maxFullscreen = false; 
+			fullscreen = false;
+		}
 		fullscreenKeyPressed = true;
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+			maxFullscreen = true;
+		}
 	}
 	else if (glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE) {
 		fullscreenKeyPressed = false;
@@ -247,9 +254,7 @@ TextureObject& CameraQuad::GetLastCapture() {
 	return emptyTexObject;
 }
 
-TextureObject& CameraQuad::GetActiveCapture(GLFWwindow* window) {
-	if (screenCaptures.size() == 0) { return emptyTexObject; }
-
+void CameraQuad::UpdateActiveCapture(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS && !arrowKeyPressed) {
 		activeCapture--;
 		if (activeCapture < 0) { activeCapture = screenCaptures.size() - 1; }
@@ -263,7 +268,10 @@ TextureObject& CameraQuad::GetActiveCapture(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_K) == GLFW_RELEASE) {
 		arrowKeyPressed = false;
 	}
+}
 
+TextureObject& CameraQuad::GetActiveCapture() {
+	if (screenCaptures.size() == 0) { return emptyTexObject; }
 	return screenCaptures[activeCapture];
 }
 
